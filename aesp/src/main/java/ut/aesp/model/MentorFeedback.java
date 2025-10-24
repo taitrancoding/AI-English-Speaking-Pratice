@@ -1,0 +1,39 @@
+package ut.aesp.model;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "mentor_feedbacks")
+public class MentorFeedback extends Auditable {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @ManyToOne
+  @JoinColumn(name = "mentor_id", nullable = false)
+  private Mentor mentor;
+
+  @ManyToOne
+  @JoinColumn(name = "learner_id", nullable = false)
+  private LearnerProfile learner;
+
+  @ManyToOne
+  @JoinColumn(name = "session_id")
+  private AiPracticeSession session;
+
+  @Lob
+  private String pronunciationComment;
+
+  @Lob
+  private String grammarComment;
+
+  private Float rating;
+
+  @Lob
+  private String improvementSuggestion;
+}
