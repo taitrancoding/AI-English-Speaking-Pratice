@@ -1,10 +1,12 @@
 package ut.aesp.model;
 
+import org.apache.logging.log4j.util.EnglishEnums;
 import org.hibernate.envers.Audited;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import ut.aesp.enums.EnglishLevel;
 
 @Getter
 @Setter
@@ -21,7 +23,8 @@ public class LearnerProfile extends Auditable {
   @JoinColumn(name = "user_id", nullable = false, unique = true)
   private User user;
 
-  private String englishLevel; // beginner | intermediate | advanced
+  @Enumerated(EnumType.STRING)
+  private EnglishLevel englishLevel = EnglishLevel.BEGINNER; // beginner | intermediate | advanced
 
   @Lob
   private String goals;

@@ -3,6 +3,9 @@ package ut.aesp.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import ut.aesp.enums.PackageStatus;
+import ut.aesp.enums.UserStatus;
+
 import java.math.BigDecimal;
 
 import org.hibernate.envers.Audited;
@@ -26,5 +29,6 @@ public class Package extends Auditable {
   private BigDecimal price;
   private Integer durationDays;
   private Boolean hasMentor;
-  private String status = "active";
+  @Enumerated(EnumType.STRING)
+  private PackageStatus status = PackageStatus.ACTIVE;
 }

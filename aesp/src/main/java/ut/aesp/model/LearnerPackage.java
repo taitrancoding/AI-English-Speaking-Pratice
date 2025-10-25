@@ -3,6 +3,8 @@ package ut.aesp.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import ut.aesp.enums.PaymentStatus;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -32,6 +34,7 @@ public class LearnerPackage extends Auditable {
   private BigDecimal priceAtPurchase;
   private LocalDateTime expireDate;
 
+  @Enumerated(EnumType.STRING)
   @Column(length = 20)
-  private String paymentStatus; // pending | completed | failed
+  private PaymentStatus paymentStatus = PaymentStatus.PENDING; // pending | completed | failed
 }

@@ -6,12 +6,12 @@ services:
     container_name: aesp-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: Aesp@2025
-      MYSQL_DATABASE: bejava_db
-      MYSQL_USER: bejava_user
-      MYSQL_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
@@ -28,10 +28,10 @@ services:
       db:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://aesp-mysql:3306/bejava_db?useSSL=false&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: bejava_user
-      SPRING_DATASOURCE_PASSWORD: 123456
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
     ports:
       - "8080:8080"
 

@@ -3,6 +3,9 @@ package ut.aesp.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import ut.aesp.enums.UserRole;
+import ut.aesp.enums.UserStatus;
+
 import java.time.LocalDateTime;
 import org.hibernate.envers.Audited;
 
@@ -26,13 +29,15 @@ public class User extends Auditable {
 
   private String name;
 
+  @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 20)
-  private String role; // admin | mentor | learner
+  private UserRole role = UserRole.LEARNER; // admin | mentor | learner
 
   private String avatarUrl;
 
+  @Enumerated(EnumType.STRING)
   @Column(length = 20)
-  private String status = "active"; // active | disabled
+  private UserStatus status = UserStatus.ACTIVE; // active | disabled
 
   private LocalDateTime deletedAt;
 }

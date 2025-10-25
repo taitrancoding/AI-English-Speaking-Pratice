@@ -5,6 +5,7 @@ import org.hibernate.envers.Audited;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import ut.aesp.enums.AvailabilityStatus;
 
 @Getter
 @Setter
@@ -31,6 +32,7 @@ public class Mentor extends Auditable {
   private Integer experienceYears;
   private Integer totalStudents;
 
+  @Enumerated(EnumType.STRING)
   @Column(length = 20)
-  private String availabilityStatus; // available | busy | inactive
+  private AvailabilityStatus availabilityStatus = AvailabilityStatus.AVAILABLE; // available | busy | inactive
 }
