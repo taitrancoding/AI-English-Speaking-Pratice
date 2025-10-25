@@ -1,4 +1,8 @@
-  English Speaking Practice Platform Supported by AI (AESP)
+<div align="center">
+
+# English Speaking Practice Platform Supported by AI (AESP)
+
+</div>
 
 The AI English Speaking Practice (AESP) platform is engineered to enhance learners' oral proficiency through a hybrid model combining AI-driven conversation simulation with mentor-guided instruction.
 
