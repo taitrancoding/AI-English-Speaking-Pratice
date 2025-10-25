@@ -1,3 +1,4 @@
+                                                                            English Speaking Practice Platform Supported by AI (AESP)
 The AI English Speaking Practice (AESP) platform is engineered to enhance learners' oral proficiency through a hybrid model combining AI-driven conversation simulation with mentor-guided instruction.
 
 In contrast to conventional pedagogical methods, which primarily focus on grammar and reading, AESP prioritizes interactive oral practice. The platform enables learners to engage in naturalistic conversation with an AI agent that delivers instantaneous, formative feedback on pronunciation, fluency, and grammatical accuracy.
