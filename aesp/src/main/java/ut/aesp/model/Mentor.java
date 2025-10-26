@@ -3,12 +3,16 @@ package ut.aesp.model;
 import org.hibernate.envers.Audited;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ut.aesp.enums.AvailabilityStatus;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Audited
 @Table(name = "mentors")

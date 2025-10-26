@@ -1,7 +1,9 @@
 package ut.aesp.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ut.aesp.enums.UserRole;
 import ut.aesp.enums.UserStatus;
@@ -11,6 +13,8 @@ import org.hibernate.envers.Audited;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Audited
 @Table(name = "users", indexes = {

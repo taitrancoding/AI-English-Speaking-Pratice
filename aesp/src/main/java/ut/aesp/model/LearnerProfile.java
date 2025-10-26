@@ -4,12 +4,16 @@ import org.apache.logging.log4j.util.EnglishEnums;
 import org.hibernate.envers.Audited;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ut.aesp.enums.EnglishLevel;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Audited
 @Entity
 @Table(name = "learner_profiles")
