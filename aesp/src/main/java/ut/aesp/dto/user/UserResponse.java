@@ -9,7 +9,7 @@ import ut.aesp.enums.UserStatus;
 
 @Getter
 @Setter
-public class UserReponse {
+public class UserResponse {
   private Long id;
   private String email;
   private String name;

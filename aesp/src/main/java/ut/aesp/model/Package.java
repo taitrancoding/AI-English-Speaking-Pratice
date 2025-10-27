@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ut.aesp.enums.PackageStatus;
-import ut.aesp.enums.UserStatus;
 
 import java.math.BigDecimal;
 
@@ -33,6 +32,7 @@ public class Package extends Auditable {
   private BigDecimal price;
   private Integer durationDays;
   private Boolean hasMentor;
+
   @Enumerated(EnumType.STRING)
   private PackageStatus status = PackageStatus.ACTIVE;
 }

@@ -1,6 +1,5 @@
 package ut.aesp.model;
 
-import org.apache.logging.log4j.util.EnglishEnums;
 import org.hibernate.envers.Audited;
 
 import jakarta.persistence.*;
