@@ -8,10 +8,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LearnerPackageReponse {
+public class LearnerPackageResponse {
   private Long id;
   private Long learnerId;
   private Long packageId;
+  private Integer transactionId;
   private BigDecimal priceAtPurchase;
   private LocalDateTime purchaseDate;
   private LocalDateTime expireDate;

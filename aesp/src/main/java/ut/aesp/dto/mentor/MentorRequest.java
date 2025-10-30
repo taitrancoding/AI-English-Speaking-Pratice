@@ -22,5 +22,7 @@ public class MentorRequest {
   @Size(max = 500)
   private String skills;
 
+  private Integer experienceYears;
+
   private AvailabilityStatus availabilityStatus;
 }

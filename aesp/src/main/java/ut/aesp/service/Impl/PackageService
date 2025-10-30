@@ -1,0 +1,63 @@
+package ut.aesp.service.Impl;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ut.aesp.dto.packagee.PackageRequest;
+import ut.aesp.dto.packagee.PackageResponse;
+import ut.aesp.exception.ResourceNotFoundException;
+import ut.aesp.mapper.PackageMapper;
+import ut.aesp.model.Package;
+import ut.aesp.repository.PackageRepository;
+import ut.aesp.service.IPackageService;
+
+@Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Transactional
+public class PackageServiceImpl implements IPackageService {
+
+    PackageRepository repo;
+    PackageMapper mapper;
+
+    @Override
+    public PackageResponse create(PackageRequest payload) {
+        Package p = mapper.toEntity(payload);
+        var saved = repo.save(p);
+        return mapper.toResponse(saved);
+    }
+
+    @Override
+    public PackageResponse get(Long id) {
+        return repo.findById(id).map(mapper::toResponse)
+                .orElseThrow(() -> new ResourceNotFoundException("Package", "id", id));
+    }
+
+    @Override
+    public PackageResponse update(Long id, PackageRequest payload) {
+        Package p = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Package", "id", id));
+        if (payload.getName() != null) p.setName(payload.getName());
+        if (payload.getDescription() != null) p.setDescription(payload.getDescription());
+        if (payload.getPrice() != null) p.setPrice(payload.getPrice());
+        if (payload.getDurationDays() != null) p.setDurationDays(payload.getDurationDays());
+        if (payload.getHasMentor() != null) p.setHasMentor(payload.getHasMentor());
+        if (payload.getStatus() != null) p.setStatus(payload.getStatus());
+        var updated = repo.save(p);
+        return mapper.toResponse(updated);
+    }
+
+    @Override
+    public void delete(Long id) {
+        Package p = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Package", "id", id));
+        repo.delete(p);
+    }
+
+    @Override
+    public Page<PackageResponse> list(Pageable pageable) {
+        return repo.findAll(pageable).map(mapper::toResponse);
+    }
+}

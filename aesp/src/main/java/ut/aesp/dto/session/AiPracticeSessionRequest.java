@@ -11,4 +11,5 @@ public class AiPracticeSessionRequest {
   private String scenario;
   private Integer durationMinutes;
   private String audioUrl;
+  private String aiVersion;
 }

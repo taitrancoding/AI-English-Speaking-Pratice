@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
+import ut.aesp.enums.UserRole;
 
 @Getter
 @Setter
@@ -20,4 +21,7 @@ public class UserUpdate {
   @Length(min = 8, message = "Mật khẩu phải có ít nhất 8 ký tự")
   @Pattern(regexp = "^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).+$", message = "Mật khẩu phải chứa ít nhất một chữ hoa và một ký tự đặc biệt")
   private String password;
+
+  private UserRole role;
+
 }

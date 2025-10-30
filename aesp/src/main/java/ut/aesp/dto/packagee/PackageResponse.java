@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PackageReponse {
+public class PackageResponse {
   private Long id;
   private String name;
   private String description;

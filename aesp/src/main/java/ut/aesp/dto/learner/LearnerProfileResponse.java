@@ -6,7 +6,7 @@ import ut.aesp.enums.EnglishLevel;
 
 @Getter
 @Setter
-public class LearnerProfileReponse {
+public class LearnerProfileResponse {
   private Long id;
   private Long userId;
   private String name;
