@@ -7,8 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ut.aesp.dto.reportt.ProgressReportRequest;
-import ut.aesp.dto.reportt.ProgressReportResponse;
+
+import ut.aesp.dto.report.ProgressReportRequest;
+import ut.aesp.dto.report.ProgressReportResponse;
 import ut.aesp.repository.ProgressReportRepository;
 import ut.aesp.exception.ResourceNotFoundException;
 import ut.aesp.mapper.ProgressReportMapper;

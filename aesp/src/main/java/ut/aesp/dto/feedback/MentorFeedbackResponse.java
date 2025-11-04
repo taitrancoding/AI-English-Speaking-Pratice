@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MentorFeedbackReponse {
+public class MentorFeedbackResponse {
   private Long id;
   private Long mentorId;
   private Long learnerId;

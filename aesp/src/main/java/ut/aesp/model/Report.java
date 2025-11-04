@@ -21,7 +21,7 @@ public class Report extends Auditable {
   @ManyToOne
   @JoinColumn(name = "admin_id", nullable = false)
   private User admin;
-
+  
   @Lob
   private String fileUrl;
 

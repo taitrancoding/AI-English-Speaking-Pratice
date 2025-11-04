@@ -2,8 +2,9 @@ package ut.aesp.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ut.aesp.dto.reportt.ProgressReportRequest;
-import ut.aesp.dto.reportt.ProgressReportResponse;
+
+import ut.aesp.dto.report.ProgressReportRequest;
+import ut.aesp.dto.report.ProgressReportResponse;
 import ut.aesp.model.ProgressReport;
 
 @Mapper(componentModel = "spring")

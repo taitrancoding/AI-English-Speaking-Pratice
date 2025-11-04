@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ReportReponse {
+public class ReportResponse {
   private Long id;
   private Long adminId;
   private String reportType;

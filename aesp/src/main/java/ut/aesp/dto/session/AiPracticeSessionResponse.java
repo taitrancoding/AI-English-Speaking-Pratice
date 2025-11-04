@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AiPracticeSessionReponse {
+public class AiPracticeSessionResponse {
   private Long id;
   private Long learnerId;
   private String topic;
