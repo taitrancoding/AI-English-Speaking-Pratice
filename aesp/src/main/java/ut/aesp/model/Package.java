@@ -28,7 +28,6 @@ public class Package extends Auditable {
 
   @Lob
   private String description;
-
   private BigDecimal price;
   private Integer durationDays;
   private Boolean hasMentor;

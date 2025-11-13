@@ -21,8 +21,8 @@ import ut.aesp.service.ISystemPolicyService;
 @Transactional
 public class SystemPolicyService implements ISystemPolicyService {
 
-  SystemPolicyRepository repo;
-  SystemPolicyMapper mapper;
+  private final SystemPolicyRepository repo;
+  private final SystemPolicyMapper mapper;
 
   @Override
   public SystemPolicyResponse create(SystemPolicyRequest payload) {

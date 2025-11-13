@@ -6,4 +6,6 @@ import ut.aesp.model.SystemPolicy;
 
 @Repository
 public interface SystemPolicyRepository extends JpaRepository<SystemPolicy, Long> {
+  SystemPolicy findByTitle(String title);
+
 }

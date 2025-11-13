@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -21,12 +22,12 @@ public class Report extends Auditable {
   @ManyToOne
   @JoinColumn(name = "admin_id", nullable = false)
   private User admin;
-  
+
   @Lob
   private String fileUrl;
 
   private String reportType;
-  private java.time.LocalDateTime generatedAt;
+  private LocalDateTime generatedAt;
 
   @Lob
   private String dataSummary;

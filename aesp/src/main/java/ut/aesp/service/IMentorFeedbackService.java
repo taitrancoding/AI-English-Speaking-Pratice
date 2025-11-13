@@ -12,5 +12,7 @@ public interface IMentorFeedbackService {
 
   void delete(Long id);
 
+  MentorFeedbackResponse update(Long id, MentorFeedbackRequest request);
+
   Page<MentorFeedbackResponse> listByMentor(Long mentorId, Pageable pageable);
 }

@@ -18,15 +18,15 @@ public class MentorFeedback extends Auditable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "mentor_id", nullable = false)
   private Mentor mentor;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "learner_id", nullable = false)
   private LearnerProfile learner;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "session_id")
   private AiPracticeSession session;
 

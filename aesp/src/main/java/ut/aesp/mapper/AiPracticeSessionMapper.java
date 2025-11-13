@@ -8,7 +8,7 @@ import ut.aesp.model.AiPracticeSession;
 
 @Mapper(componentModel = "spring")
 public interface AiPracticeSessionMapper {
-  @Mapping(target = "learner.id", source = "learnerId")
+
   AiPracticeSession toEntity(AiPracticeSessionRequest dto);
 
   @Mapping(target = "learnerId", source = "learner.id")

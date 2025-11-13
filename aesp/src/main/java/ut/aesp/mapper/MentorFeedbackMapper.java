@@ -8,9 +8,9 @@ import ut.aesp.model.MentorFeedback;
 
 @Mapper(componentModel = "spring")
 public interface MentorFeedbackMapper {
-  @Mapping(target = "mentor.id", source = "mentorId")
-  @Mapping(target = "learner.id", source = "learnerId")
-  @Mapping(target = "session.id", source = "sessionId")
+  // @Mapping(target = "mentor.id", source = "mentorId")
+  // @Mapping(target = "learner.id", source = "learnerId")
+  // @Mapping(target = "session.id", source = "sessionId")
   MentorFeedback toEntity(MentorFeedbackRequest dto);
 
   @Mapping(target = "mentorId", source = "mentor.id")

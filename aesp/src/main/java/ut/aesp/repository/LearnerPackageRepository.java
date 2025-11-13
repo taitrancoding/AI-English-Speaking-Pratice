@@ -14,5 +14,5 @@ public interface LearnerPackageRepository extends JpaRepository<LearnerPackage, 
 
   List<LearnerPackage> findAllByLearner(LearnerProfile learner);
 
-  Page<LearnerPackage> findAllByLearner(LearnerProfile learner, Pageable pageable);
+  Page<LearnerPackage> findAllByLearnerId(Long learnerId, Pageable pageable);
 }

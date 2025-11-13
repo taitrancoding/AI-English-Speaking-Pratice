@@ -45,6 +45,34 @@ public class ProgressReportService implements IProgressReportService {
   }
 
   @Override
+  public ProgressReportResponse update(Long id, ProgressReportRequest payload) {
+    ProgressReport report = repo.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("ProgressReport", "id", id));
+
+    var learner = learnerProfileRepository.findById(payload.getLearnerId())
+        .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "id", payload.getLearnerId()));
+
+    report.setLearner(learner);
+    report.setWeekStart(payload.getWeekStart());
+    report.setWeekEnd(payload.getWeekEnd());
+    report.setTotalSessions(payload.getTotalSessions());
+    report.setAvgPronunciation(payload.getAvgPronunciation());
+    report.setAvgGrammar(payload.getAvgGrammar());
+    report.setAvgVocabulary(payload.getAvgVocabulary());
+    report.setImprovementNotes(payload.getImprovementNotes());
+
+    var updated = repo.save(report);
+    return mapper.toResponse(updated);
+  }
+
+  @Override
+  public void delete(Long id) {
+    ProgressReport report = repo.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("ProgressReport", "id", id));
+    repo.delete(report);
+  }
+
+  @Override
   public Page<ProgressReportResponse> listByLearner(Long learnerId, Pageable pageable) {
     var learner = learnerProfileRepository.findById(learnerId)
         .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "id", learnerId));

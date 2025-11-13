@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface LearnerProfileRepository extends JpaRepository<LearnerProfile, Long> {
 
-    Optional<LearnerProfile> findByUserId(Long userId);
+    Optional<LearnerProfile> findByUserId(Long UserId);
 }

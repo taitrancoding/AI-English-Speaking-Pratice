@@ -3,6 +3,9 @@ package ut.aesp.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import ut.aesp.dto.auth.RegisterRequest;
+import ut.aesp.dto.auth.LoginRequest;
+import ut.aesp.model.User;
 import ut.aesp.dto.user.CreateUserRequest;
 import ut.aesp.dto.user.UserResponse;
 import ut.aesp.dto.user.UserUpdate;
@@ -10,6 +13,7 @@ import ut.aesp.enums.UserRole;
 import ut.aesp.enums.UserStatus;
 
 public interface IUserService {
+
   UserResponse createUser(CreateUserRequest payload);
 
   UserResponse getUser(Long id);
@@ -18,9 +22,5 @@ public interface IUserService {
 
   void deleteUser(Long id);
 
-  Page<UserResponse> getAllUsers(Pageable pageable);
-
-  Page<UserResponse> getAllByRole(UserRole role, Pageable pageable);
-
-  Page<UserResponse> getAllByStatus(UserStatus status, Pageable pageable);
+  Page<UserResponse> getAllUsers(UserRole userRole, UserStatus userStatus, Pageable pageable);
 }

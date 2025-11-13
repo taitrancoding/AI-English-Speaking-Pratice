@@ -11,7 +11,7 @@ import ut.aesp.model.User;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-  User toEntity(CreateUserRequest dto);
+  User createUser(CreateUserRequest dto);
 
   void updateEntity(@MappingTarget User entity, UserUpdate dto);
 

@@ -10,6 +10,12 @@ import ut.aesp.enums.EnglishLevel;
 public class LearnerProfileUpdate {
   private EnglishLevel englishLevel;
 
+  private String name;
+
+  private Float aiScore;
+  private Float pronunciationScore;
+  private Integer totalPracticeMinutes;
+
   @Size(max = 500, message = "Goals must be less than 500 characters.")
   private String goals;
 

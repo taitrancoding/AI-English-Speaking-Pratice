@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import ut.aesp.enums.UserRole;
+import ut.aesp.enums.UserStatus;
 
 @Getter
 @Setter
@@ -23,5 +24,7 @@ public class UserUpdate {
   private String password;
 
   private UserRole role;
+
+  private UserStatus status;
 
 }

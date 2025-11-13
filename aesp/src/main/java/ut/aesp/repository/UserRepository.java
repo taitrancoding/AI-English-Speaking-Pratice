@@ -8,7 +8,6 @@ import ut.aesp.model.User;
 import ut.aesp.enums.UserStatus;
 import ut.aesp.enums.UserRole;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,11 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   boolean existsByEmail(String email);
 
-  List<User> findAllByRole(UserRole role);
-
   Page<User> findAllByRole(UserRole role, Pageable pageable);
-
-  List<User> findAllByStatus(UserStatus status);
 
   Page<User> findAllByStatus(UserStatus status, Pageable pageable);
 }

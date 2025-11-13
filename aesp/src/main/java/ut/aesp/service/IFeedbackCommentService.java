@@ -12,5 +12,7 @@ public interface IFeedbackCommentService {
 
   void delete(Long id);
 
+  FeedbackCommentResponse update(Long id, FeedbackCommentRequest payload);
+
   Page<FeedbackCommentResponse> listByUser(Long userId, Pageable pageable);
 }

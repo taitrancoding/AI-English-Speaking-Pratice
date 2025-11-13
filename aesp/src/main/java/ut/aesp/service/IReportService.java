@@ -12,4 +12,8 @@ public interface IReportService {
 
   Page<ReportResponse> list(Pageable pageable);
 
+  void delete(Long id);
+
+  ReportResponse update(Long id, ReportRequest payload);
+
 }

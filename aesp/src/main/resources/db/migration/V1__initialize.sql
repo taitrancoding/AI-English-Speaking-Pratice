@@ -1,5 +1,5 @@
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     name VARCHAR(100),
@@ -12,7 +12,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE packages (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100),
     description TEXT,
     price DECIMAL(10,2),
@@ -23,15 +23,15 @@ CREATE TABLE packages (
 );
 
 CREATE TABLE system_policies (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255),
     content TEXT,
     created_at DATETIME
 );
 
 CREATE TABLE learner_profiles (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL UNIQUE,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL UNIQUE,
     english_level VARCHAR(20),
     goals TEXT,
     preferences TEXT,
@@ -42,8 +42,8 @@ CREATE TABLE learner_profiles (
 );
 
 CREATE TABLE mentors (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL UNIQUE,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL UNIQUE,
     bio TEXT,
     skills TEXT,
     rating FLOAT,
@@ -54,10 +54,10 @@ CREATE TABLE mentors (
 );
 
 CREATE TABLE learner_packages (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    learner_id INT NOT NULL,
-    package_id INT NOT NULL,
-    transaction_id INT,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    learner_id BIGINT NOT NULL,
+    package_id BIGINT NOT NULL,
+    transaction_id BIGINT,
     purchase_date DATETIME,
     price_at_purchase DECIMAL(10,2),
     expire_date DATETIME,
@@ -67,8 +67,8 @@ CREATE TABLE learner_packages (
 );
 
 CREATE TABLE ai_practice_sessions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    learner_id INT NOT NULL,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    learner_id BIGINT NOT NULL,
     topic VARCHAR(100),
     scenario VARCHAR(100),
     duration_minutes INT,
@@ -83,10 +83,10 @@ CREATE TABLE ai_practice_sessions (
 );
 
 CREATE TABLE mentor_feedbacks (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    mentor_id INT NOT NULL,
-    learner_id INT NOT NULL,
-    session_id INT,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    mentor_id BIGINT NOT NULL,
+    learner_id BIGINT NOT NULL,
+    session_id BIGINT,
     pronunciation_comment TEXT,
     grammar_comment TEXT,
     rating FLOAT,
@@ -98,8 +98,8 @@ CREATE TABLE mentor_feedbacks (
 );
 
 CREATE TABLE progress_reports (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    learner_id INT NOT NULL,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    learner_id BIGINT NOT NULL,
     week_start DATE,
     week_end DATE,
     total_sessions INT,
@@ -112,19 +112,19 @@ CREATE TABLE progress_reports (
 );
 
 CREATE TABLE feedback_comments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
     content TEXT,
     target_type VARCHAR(50),
-    target_id INT,
+    target_id BIGINT,
     rating INT,
     created_at DATETIME,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE reports (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    admin_id INT NOT NULL,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    admin_id BIGINT NOT NULL,
     file_url TEXT,
     report_type VARCHAR(100),
     generated_at DATETIME,

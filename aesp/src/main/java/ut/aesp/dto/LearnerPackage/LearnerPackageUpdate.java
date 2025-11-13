@@ -7,4 +7,6 @@ import lombok.Setter;
 @Setter
 public class LearnerPackageUpdate {
   private String paymentStatus;
+  private String expireDate;
+  private String priceAtPurchase;
 }

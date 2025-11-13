@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ut.aesp.dto.learner.LearnerProfileRequest;
 import ut.aesp.dto.learner.LearnerProfileResponse;
+import ut.aesp.dto.learner.LearnerProfileUpdate;
 import ut.aesp.exception.ResourceNotFoundException;
 import ut.aesp.mapper.LearnerProfileMapper;
 import ut.aesp.model.LearnerProfile;
@@ -22,9 +23,9 @@ import ut.aesp.service.ILearnerProfileService;
 @Transactional
 public class LearnerProfileService implements ILearnerProfileService {
 
-  LearnerProfileRepository repo;
-  LearnerProfileMapper mapper;
-  UserRepository userRepository;
+  private final LearnerProfileRepository repo;
+  private final LearnerProfileMapper mapper;
+  private final UserRepository userRepository;
 
   @Override
   public LearnerProfileResponse create(LearnerProfileRequest payload) {
@@ -44,7 +45,7 @@ public class LearnerProfileService implements ILearnerProfileService {
   }
 
   @Override
-  public LearnerProfileResponse update(Long id, LearnerProfileRequest payload) {
+  public LearnerProfileResponse update(Long id, LearnerProfileUpdate payload) {
     var entity = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "id", id));
     if (payload.getEnglishLevel() != null)
       entity.setEnglishLevel(payload.getEnglishLevel());
@@ -52,6 +53,14 @@ public class LearnerProfileService implements ILearnerProfileService {
       entity.setGoals(payload.getGoals());
     if (payload.getPreferences() != null)
       entity.setPreferences(payload.getPreferences());
+    if (payload.getName() != null)
+      entity.setName(payload.getName());
+    if (payload.getAiScore() != null)
+      entity.setAiScore(payload.getAiScore());
+    if (payload.getPronunciationScore() != null)
+      entity.setPronunciationScore(payload.getPronunciationScore());
+    if (payload.getTotalPracticeMinutes() != null)
+      entity.setTotalPracticeMinutes(payload.getTotalPracticeMinutes());
 
     var updated = repo.save(entity);
     return mapper.toResponse(updated);
@@ -64,7 +73,7 @@ public class LearnerProfileService implements ILearnerProfileService {
   }
 
   @Override
-  public Page<LearnerProfileResponse> listAll(Pageable pageable) {
+  public Page<LearnerProfileResponse> getAll(Pageable pageable) {
     return repo.findAll(pageable).map(mapper::toResponse);
   }
 }

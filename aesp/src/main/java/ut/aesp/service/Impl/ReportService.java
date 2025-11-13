@@ -22,9 +22,9 @@ import ut.aesp.service.IReportService;
 @Transactional
 public class ReportService implements IReportService {
 
-  ReportRepository repo;
-  ReportMapper mapper;
-  UserRepository userRepository;
+  private final ReportRepository repo;
+  private final ReportMapper mapper;
+  private final UserRepository userRepository;
 
   @Override
   public ReportResponse create(ReportRequest payload) {
@@ -41,6 +41,28 @@ public class ReportService implements IReportService {
   public ReportResponse get(Long id) {
     return repo.findById(id).map(mapper::toResponse)
         .orElseThrow(() -> new ResourceNotFoundException("Report", "id", id));
+  }
+
+  @Override
+  @Transactional
+  public ReportResponse update(Long id, ReportRequest payload) {
+    var report = repo.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Report", "id", id));
+    report.setFileUrl(payload.getFileUrl());
+    report.setReportType(payload.getReportType());
+    report.setDataSummary(payload.getDataSummary());
+    var admin = userRepository.findById(payload.getAdminId())
+        .orElseThrow(() -> new ResourceNotFoundException("User", "id", payload.getAdminId()));
+    report.setAdmin(admin);
+    var saved = repo.save(report);
+    return mapper.toResponse(saved);
+  }
+
+  @Override
+  public void delete(Long id) {
+    Report report = repo.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Report", "id", id));
+    repo.delete(report);
   }
 
   @Override

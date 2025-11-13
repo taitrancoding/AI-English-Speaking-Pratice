@@ -17,4 +17,5 @@ public interface FeedbackCommentRepository extends JpaRepository<FeedbackComment
   Page<FeedbackComment> findAllByUser(User user, Pageable pageable);
 
   List<FeedbackComment> findAllByTargetTypeAndTargetId(String targetType, Integer targetId);
+
 }

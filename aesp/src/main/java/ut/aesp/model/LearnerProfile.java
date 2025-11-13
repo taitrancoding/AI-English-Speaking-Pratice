@@ -4,6 +4,7 @@ import org.hibernate.envers.Audited;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,8 @@ public class LearnerProfile extends Auditable {
   @OneToOne
   @JoinColumn(name = "user_id", nullable = false, unique = true)
   private User user;
+
+  private String name;
 
   @Enumerated(EnumType.STRING)
   private EnglishLevel englishLevel = EnglishLevel.BEGINNER; // beginner | intermediate | advanced

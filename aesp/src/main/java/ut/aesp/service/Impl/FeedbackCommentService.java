@@ -3,8 +3,12 @@ package ut.aesp.service.Impl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ut.aesp.dto.feedback.FeedbackCommentRequest;
@@ -15,6 +19,8 @@ import ut.aesp.model.FeedbackComment;
 import ut.aesp.repository.FeedbackCommentRepository;
 import ut.aesp.repository.UserRepository;
 import ut.aesp.service.IFeedbackCommentService;
+import org.springframework.security.core.Authentication;
+import ut.aesp.model.User;
 
 @Service
 @RequiredArgsConstructor
@@ -22,18 +28,29 @@ import ut.aesp.service.IFeedbackCommentService;
 @Transactional
 public class FeedbackCommentService implements IFeedbackCommentService {
 
-  FeedbackCommentRepository repo;
-  FeedbackCommentMapper mapper;
-  UserRepository userRepository;
+  private final FeedbackCommentRepository repo;
+  private final FeedbackCommentMapper mapper;
+  private final UserRepository userRepository;
 
   @Override
-  public FeedbackCommentResponse create(FeedbackCommentRequest payload) {
-    var user = userRepository.findById(payload.getUserId())
-        .orElseThrow(() -> new ResourceNotFoundException("User", "id", payload.getUserId()));
-    FeedbackComment c = mapper.toEntity(payload);
-    c.setUser(user);
-    var saved = repo.save(c);
-    return mapper.toResponse(saved);
+  public FeedbackCommentResponse create(FeedbackCommentRequest dto) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String email = auth.getName();
+
+    User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+
+    FeedbackComment feedback = new FeedbackComment();
+    feedback.setUser(user);
+    feedback.setContent(dto.getContent());
+    feedback.setTargetType(dto.getTargetType());
+    feedback.setTargetId(dto.getTargetId());
+    feedback.setRating(dto.getRating());
+    feedback.setCreatedAt(LocalDateTime.now());
+
+    repo.save(feedback);
+
+    return mapper.toResponse(feedback);
   }
 
   @Override
@@ -46,6 +63,17 @@ public class FeedbackCommentService implements IFeedbackCommentService {
   public void delete(Long id) {
     var c = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("FeedbackComment", "id", id));
     repo.delete(c);
+  }
+
+  @Override
+  public FeedbackCommentResponse update(Long id, FeedbackCommentRequest payload) {
+    FeedbackComment entity = repo.findById(id)
+        .orElseThrow(() -> new RuntimeException("Feedback comment not found"));
+
+    mapper.updateEntityFromDto(payload, entity);
+    repo.save(entity);
+
+    return mapper.toResponse(entity);
   }
 
   @Override

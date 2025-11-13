@@ -22,14 +22,15 @@ import ut.aesp.service.IAiPracticeSessionService;
 @Transactional
 public class AiPracticeSessionService implements IAiPracticeSessionService {
 
-  AiPracticeSessionRepository repo;
-  AiPracticeSessionMapper mapper;
-  LearnerProfileRepository learnerProfileRepository;
+  private final AiPracticeSessionRepository repo;
+  private final AiPracticeSessionMapper mapper;
+  private final LearnerProfileRepository learnerProfileRepository;
 
   @Override
   public AiPracticeSessionResponse create(AiPracticeSessionRequest payload) {
     var learner = learnerProfileRepository.findById(payload.getLearnerId())
-        .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "id", payload.getLearnerId()));
+        .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "id",
+            payload.getLearnerId()));
     AiPracticeSession s = mapper.toEntity(payload);
     s.setLearner(learner);
     var saved = repo.save(s);
@@ -39,13 +40,16 @@ public class AiPracticeSessionService implements IAiPracticeSessionService {
   @Override
   public AiPracticeSessionResponse get(Long id) {
     return repo.findById(id).map(mapper::toResponse)
-        .orElseThrow(() -> new ResourceNotFoundException("AiPracticeSession", "id", id));
+        .orElseThrow(() -> new ResourceNotFoundException("AiPracticeSession", "id",
+            id));
   }
 
   @Override
-  public AiPracticeSessionResponse updateScores(Long id, AiPracticeSessionRequest payload) {
+  public AiPracticeSessionResponse updateScores(Long id,
+      AiPracticeSessionRequest payload) {
     AiPracticeSession s = repo.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("AiPracticeSession", "id", id));
+        .orElseThrow(() -> new ResourceNotFoundException("AiPracticeSession", "id",
+            id));
     if (payload.getDurationMinutes() != null)
       s.setDurationMinutes(payload.getDurationMinutes());
     if (payload.getAudioUrl() != null)
@@ -66,7 +70,8 @@ public class AiPracticeSessionService implements IAiPracticeSessionService {
   @Override
   public Page<AiPracticeSessionResponse> listByLearner(Long learnerId, Pageable pageable) {
     var learner = learnerProfileRepository.findById(learnerId)
-        .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "id", learnerId));
+        .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "id",
+            learnerId));
     return repo.findAllByLearner(learner, pageable).map(mapper::toResponse);
   }
 }

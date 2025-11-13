@@ -9,4 +9,5 @@ public class MentorUpdate {
   private String bio;
   private String skills;
   private String availabilityStatus;
+  private Integer experienceYears;
 }

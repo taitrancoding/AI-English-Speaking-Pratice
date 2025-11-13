@@ -10,6 +10,6 @@ public class SystemPolicyResponse {
   private Long id;
   private String title;
   private String content;
-  private LocalDateTime createdAt;
+  // private LocalDateTime createdAt;
 
 }

@@ -9,50 +9,62 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ut.aesp.dto.packagee.PackageRequest;
 import ut.aesp.dto.packagee.PackageResponse;
+import ut.aesp.enums.PackageStatus;
 import ut.aesp.exception.ResourceNotFoundException;
 import ut.aesp.mapper.PackageMapper;
-import ut.aesp.model.Package;
 import ut.aesp.repository.PackageRepository;
 import ut.aesp.service.IPackageService;
+import ut.aesp.model.Package;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional
-public class PackageServiceImpl implements IPackageService {
+public class PackageService implements IPackageService {
 
-    PackageRepository repo;
-    PackageMapper mapper;
+    private final PackageRepository repo;
+    private final PackageMapper mapper;
 
     @Override
     public PackageResponse create(PackageRequest payload) {
         Package p = mapper.toEntity(payload);
-        var saved = repo.save(p);
+        Package saved = repo.save(p);
         return mapper.toResponse(saved);
     }
 
     @Override
     public PackageResponse get(Long id) {
-        return repo.findById(id).map(mapper::toResponse)
+        ut.aesp.model.Package p = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Package", "id", id));
+        return mapper.toResponse(p);
     }
 
     @Override
     public PackageResponse update(Long id, PackageRequest payload) {
-        Package p = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Package", "id", id));
-        if (payload.getName() != null) p.setName(payload.getName());
-        if (payload.getDescription() != null) p.setDescription(payload.getDescription());
-        if (payload.getPrice() != null) p.setPrice(payload.getPrice());
-        if (payload.getDurationDays() != null) p.setDurationDays(payload.getDurationDays());
-        if (payload.getHasMentor() != null) p.setHasMentor(payload.getHasMentor());
-        if (payload.getStatus() != null) p.setStatus(payload.getStatus());
-        var updated = repo.save(p);
+        ut.aesp.model.Package p = repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Package", "id", id));
+
+        if (payload.getName() != null)
+            p.setName(payload.getName());
+        if (payload.getDescription() != null)
+            p.setDescription(payload.getDescription());
+        if (payload.getPrice() != null)
+            p.setPrice(payload.getPrice());
+        if (payload.getDurationDays() != null)
+            p.setDurationDays(payload.getDurationDays());
+        if (payload.getHasMentor() != null)
+            p.setHasMentor(payload.getHasMentor());
+        if (payload.getStatus() != null)
+            p.setStatus(PackageStatus.ACTIVE);
+
+        ut.aesp.model.Package updated = repo.save(p);
         return mapper.toResponse(updated);
     }
 
     @Override
     public void delete(Long id) {
-        Package p = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Package", "id", id));
+        ut.aesp.model.Package p = repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Package", "id", id));
         repo.delete(p);
     }
 

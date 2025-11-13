@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ut.aesp.dto.mentor.MentorRequest;
 import ut.aesp.dto.mentor.MentorResponse;
+import ut.aesp.dto.mentor.MentorUpdate;
+import ut.aesp.enums.AvailabilityStatus;
 import ut.aesp.exception.ResourceNotFoundException;
 import ut.aesp.mapper.MentorMapper;
 import ut.aesp.model.Mentor;
@@ -22,9 +24,9 @@ import ut.aesp.service.IMentorService;
 @Transactional
 public class MentorService implements IMentorService {
 
-  MentorRepository repo;
-  MentorMapper mapper;
-  UserRepository userRepository;
+  private final MentorRepository repo;
+  private final MentorMapper mapper;
+  private final UserRepository userRepository;
 
   @Override
   public MentorResponse create(MentorRequest payload) {
@@ -43,7 +45,7 @@ public class MentorService implements IMentorService {
   }
 
   @Override
-  public MentorResponse update(Long id, MentorRequest payload) {
+  public MentorResponse update(Long id, MentorUpdate payload) {
     Mentor m = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Mentor", "id", id));
     if (payload.getBio() != null)
       m.setBio(payload.getBio());
@@ -51,6 +53,8 @@ public class MentorService implements IMentorService {
       m.setSkills(payload.getSkills());
     if (payload.getExperienceYears() != null)
       m.setExperienceYears(payload.getExperienceYears());
+    if (payload.getAvailabilityStatus() != null)
+      m.setAvailabilityStatus(AvailabilityStatus.valueOf(payload.getAvailabilityStatus()));
     var updated = repo.save(m);
     return mapper.toResponse(updated);
   }
