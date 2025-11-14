@@ -11,4 +11,6 @@ import java.util.List;
 public interface PackageRepository extends JpaRepository<Package, Long> {
 
   List<Package> findAllByStatus(PackageStatus status);
+
+  Object save(java.lang.Package p);
 }

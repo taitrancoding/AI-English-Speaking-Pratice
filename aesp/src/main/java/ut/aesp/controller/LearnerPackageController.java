@@ -52,7 +52,15 @@ public class LearnerPackageController {
 
   @GetMapping
   @PreAuthorize("hasRole('ADMIN') or hasRole('LEARNER')")
-  public ResponseEntity<?> list(Pageable pageable) {
+  public ResponseEntity<?> list(Pageable pageable,
+    @AuthenticationPrincipal CustomUserDetailsService.CustomUserDetails userDetails) {
+
+  Long userId = userDetails.getId();
+  if (userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
     return ResponseEntity.ok(learnerPackageService.list(pageable));
   }
+  return ResponseEntity.ok(learnerPackageService.listByLearner(userId, pageable));
 }
+}
+
+// note
