@@ -6,8 +6,10 @@ import lombok.AccessLevel;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ut.aesp.dto.session.*;
+import ut.aesp.security.CustomUserDetailsService;
 import ut.aesp.service.IAiPracticeSessionService;
 
 @RestController
@@ -42,9 +44,14 @@ public class AiPracticeSessionController {
     return ResponseEntity.noContent().build();
   }
 
-  @GetMapping("/learner/{learnerId}")
-  @PreAuthorize("hasRole('ADMIN') or (hasRole('LEARNER') and #learnerId == T(ut.aesp.security.CustomUserDetailsService).getCurrentUserId())")
-  public ResponseEntity<?> listByLearner(@PathVariable Long learnerId, Pageable pageable) {
-    return ResponseEntity.ok(aiPracticeSessionService.listByLearner(learnerId, pageable));
+  @GetMapping("/my-sessions")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('LEARNER')")
+  public ResponseEntity<?> listMySessions(
+      Pageable pageable,
+      @AuthenticationPrincipal CustomUserDetailsService.CustomUserDetails userDetails) {
+      
+    Long userId = userDetails.getId();
+    
+    return ResponseEntity.ok(aiPracticeSessionService.listByUser(userId, pageable));
   }
 }

@@ -12,17 +12,22 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-  @Value("${app.jwt.secret}")
-  private String jwtSecret;
-
-  @Value("${app.jwt.expirationMs}")
-  private long jwtExpirationMs;
-
-  @Value("${app.jwt.refreshExpirationMs}")
-  private long refreshExpirationMs;
+  private final String jwtSecret;
+  private final long jwtExpirationMs;
+  private final long refreshExpirationMs;
 
   private Key getSigningKey() {
     return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+  }
+
+  public JwtTokenProvider(
+      @Value("${app.jwt.secret}") String jwtSecret,
+      @Value("${app.jwt.expirationMs}") long jwtExpirationMs,
+      @Value("${app.jwt.refreshExpirationMs}") long refreshExpirationMs) {
+    this.jwtSecret = jwtSecret;
+    this.jwtExpirationMs = jwtExpirationMs;
+    this.refreshExpirationMs = refreshExpirationMs;
+    System.out.println("DEBUG JWT: Secret Key Length: " + this.jwtSecret.getBytes().length + " bytes");
   }
 
   public String generateAccessToken(User user) {

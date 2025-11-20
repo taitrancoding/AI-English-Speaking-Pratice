@@ -24,4 +24,5 @@ public class LoginRequest {
   @Length(min = 8, message = "Mật khẩu phải có ít nhất 8 ký tự")
   @Pattern(regexp = "^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).+$", message = "Mật khẩu phải chứa ít nhất một chữ hoa và một ký tự đặc biệt")
   private String password;
+
 }

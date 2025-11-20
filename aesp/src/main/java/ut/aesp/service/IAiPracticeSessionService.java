@@ -14,6 +14,6 @@ public interface IAiPracticeSessionService {
 
   void delete(Long id);
 
-  Page<AiPracticeSessionResponse> listByLearner(Long learnerId, Pageable pageable);
+  Page<AiPracticeSessionResponse> listByUser(Long UserId, Pageable pageable);
 
 }

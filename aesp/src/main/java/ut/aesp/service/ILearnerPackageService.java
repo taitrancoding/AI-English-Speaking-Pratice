@@ -19,6 +19,6 @@ public interface ILearnerPackageService {
 
   LearnerPackageResponse update(Long id, LearnerPackageUpdate payload);
 
-  Page<LearnerPackageResponse> listByLearner(Long learnerId, Pageable pageable);
+  Page<LearnerPackageResponse> listByUser(Long userId, Pageable pageable);
 
 }

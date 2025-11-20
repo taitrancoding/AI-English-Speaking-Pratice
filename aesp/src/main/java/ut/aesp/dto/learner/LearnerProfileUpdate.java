@@ -21,4 +21,33 @@ public class LearnerProfileUpdate {
 
   @Size(max = 500, message = "Preferences must be less than 500 characters.")
   private String preferences;
+
+ 
+  public EnglishLevel getEnglishLevel() {
+    return this.englishLevel;
+  }
+
+  public String getGoals() {
+    return this.goals;
+  }
+
+  public String getPreferences() {
+    return this.preferences;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public Float getAiScore() {
+    return this.aiScore;
+  }
+
+  public Float getPronunciationScore() {
+    return this.pronunciationScore;
+  }
+
+  public Integer getTotalPracticeMinutes() {
+    return this.totalPracticeMinutes;
+  }
 }

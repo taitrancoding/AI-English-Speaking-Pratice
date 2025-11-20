@@ -81,4 +81,9 @@ public class FeedbackCommentService implements IFeedbackCommentService {
     var user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
     return repo.findAllByUser(user, pageable).map(mapper::toResponse);
   }
+
+  @Override
+  public Page<FeedbackCommentResponse> getAll(Pageable pageable) {
+    return repo.findAll(pageable).map(mapper::toResponse);
+  }
 }

@@ -32,4 +32,8 @@ public class CreateUserRequest {
 
   @NotNull(message = "Vai trò không được để trống")
   private UserRole role;
+
+    public String getEmail() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

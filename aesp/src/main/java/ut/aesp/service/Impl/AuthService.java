@@ -1,9 +1,8 @@
 package ut.aesp.service.Impl;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,9 @@ import ut.aesp.enums.UserRole;
 import ut.aesp.enums.UserStatus;
 import ut.aesp.exception.APIException;
 import ut.aesp.model.User;
+import ut.aesp.model.LearnerProfile;
 import ut.aesp.repository.UserRepository;
+import ut.aesp.repository.LearnerProfileRepository;
 import ut.aesp.security.JwtTokenProvider;
 import ut.aesp.service.IAuthService;
 
@@ -46,6 +47,7 @@ public class AuthService implements IAuthService {
   private final PasswordEncoder passwordEncoder;
   private final JwtTokenProvider jwtTokenProvider;
   private final String googleClientId;
+  private final LearnerProfileRepository learnerProfileRepository;
 
   // lưu danh sách token đã logout (blacklist)
   static Set<String> blacklistedTokens = new HashSet<>();
@@ -65,10 +67,18 @@ public class AuthService implements IAuthService {
     user.setCreatedAt(LocalDateTime.now());
     user.setUpdatedAt(LocalDateTime.now());
 
-    return userRepository.save(user);
+    User savedUser = userRepository.save(user);
+
+    LearnerProfile profile = new LearnerProfile();
+    profile.setUser(savedUser);
+    profile.setName(savedUser.getName());
+    learnerProfileRepository.save(profile);
+
+    return savedUser;
   }
 
   @Override
+  
   public TokenReponse login(LoginRequest request) {
     User user = userRepository.findByEmail(request.getEmail())
         .orElseThrow(() -> new APIException("Email không tồn tại", HttpStatus.UNAUTHORIZED));
@@ -83,8 +93,11 @@ public class AuthService implements IAuthService {
     String accessToken = jwtTokenProvider.generateAccessToken(user);
     String refreshToken = jwtTokenProvider.generateRefreshToken(user);
 
+    
     return new TokenReponse(accessToken, refreshToken);
+    
   }
+  
 
   @Override
   @Transactional

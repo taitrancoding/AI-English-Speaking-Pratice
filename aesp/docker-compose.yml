@@ -30,6 +30,7 @@ services:
       db:
         condition: service_healthy
     environment:
+      JWT_SECRET: ${JWT_SECRET}
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
@@ -40,7 +41,7 @@ services:
     env_file:
       - .env
     volumes:
-    - ./.env:/app/.env
-  
+      - ./.env:/app/.env
+
 volumes:
   db_data:

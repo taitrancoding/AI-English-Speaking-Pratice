@@ -8,12 +8,10 @@ import ut.aesp.dto.learner.LearnerProfileUpdate;
 
 public interface ILearnerProfileService {
   LearnerProfileResponse create(LearnerProfileRequest payload);
-
   LearnerProfileResponse getById(Long id);
-
   LearnerProfileResponse update(Long id, LearnerProfileUpdate payload);
-
   void delete(Long id);
-
   Page<LearnerProfileResponse> getAll(Pageable pageable);
+
+  LearnerProfileResponse getByUserId(Long userId);
 }

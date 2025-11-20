@@ -21,7 +21,11 @@ import ut.aesp.exception.APIException;
 import ut.aesp.exception.ResourceNotFoundException;
 import ut.aesp.mapper.UserMapper;
 import ut.aesp.model.User;
+import ut.aesp.model.LearnerProfile; // 1. THÊM IMPORT
+import ut.aesp.model.Mentor; // 2. THÊM IMPORT
 import ut.aesp.repository.UserRepository;
+import ut.aesp.repository.LearnerProfileRepository; // 3. THÊM IMPORT
+import ut.aesp.repository.MentorRepository; // 4. THÊM IMPORT
 import ut.aesp.service.IUserService;
 import ut.aesp.enums.UserRole;
 import org.springframework.security.core.Authentication;
@@ -35,6 +39,9 @@ public class UserService implements IUserService {
   private final UserMapper userMapper;
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+
+  private final LearnerProfileRepository learnerProfileRepository;
+  private final MentorRepository mentorRepository;
 
   @Override
   public UserResponse createUser(CreateUserRequest payload) {
@@ -79,6 +86,20 @@ public class UserService implements IUserService {
     user.setStatus(UserStatus.ACTIVE);
 
     User saved = userRepository.save(user);
+    
+    if (saved.getRole() == UserRole.LEARNER) {
+      LearnerProfile newProfile = new LearnerProfile();
+      newProfile.setUser(saved);
+      newProfile.setName(saved.getName()); // LearnerProfile CÓ trường name
+      learnerProfileRepository.save(newProfile);
+      System.out.println("✅ Đã tự động tạo LearnerProfile cho: " + saved.getEmail());
+    } else if (saved.getRole() == UserRole.MENTOR) {
+      Mentor newMentor = new Mentor();
+      newMentor.setUser(saved);
+      mentorRepository.save(newMentor);
+      System.out.println("✅ Đã tự động tạo MentorProfile cho: " + saved.getEmail());
+    }
+    
     System.out.println("ADMIN " + currentUser.getEmail() + " vừa tạo user mới: " + saved.getEmail());
 
     return userMapper.toResponse(saved);
@@ -103,9 +124,36 @@ public class UserService implements IUserService {
       u.setPassword(passwordEncoder.encode(payload.getPassword()));
     }
     u.setUpdatedAt(LocalDateTime.now());
-    if (payload.getRole() != null)
+      // Kiểm tra và xử lý thay đổi vai trò
+    if (payload.getRole() != null && payload.getRole() != u.getRole()) {
       u.setRole(payload.getRole());
-    u.setStatus(payload.getStatus());
+      
+      // Nếu đổi sang LEARNER, kiểm tra/tạo profile
+      if (payload.getRole() == UserRole.LEARNER) {
+        if (learnerProfileRepository.findByUserId(u.getId()).isEmpty()) {
+          LearnerProfile newProfile = new LearnerProfile();
+          newProfile.setUser(u);
+          newProfile.setName(u.getName());
+          learnerProfileRepository.save(newProfile);
+          System.out.println("✅ Đã tự động tạo LearnerProfile cho user: " + u.getEmail());
+        }
+      }
+      // Nếu đổi sang MENTOR, kiểm tra/tạo profile
+      else if (payload.getRole() == UserRole.MENTOR) {
+          if (mentorRepository.findByUserId(u.getId()).isEmpty()) {
+            Mentor newMentor = new Mentor();
+            newMentor.setUser(u);
+
+            mentorRepository.save(newMentor);
+            System.out.println("✅ Đã tự động tạo MentorProfile cho user: " + u.getEmail());
+          }
+      }
+    }
+    
+    if (payload.getStatus() != null) {
+      u.setStatus(payload.getStatus());
+    }
+
     User updated = userRepository.save(u);
     return userMapper.toResponse(updated);
   }

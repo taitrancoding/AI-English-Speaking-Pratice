@@ -1,7 +1,6 @@
 package ut.aesp.service.Impl;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
@@ -23,7 +22,6 @@ import ut.aesp.repository.PackageRepository;
 import ut.aesp.service.ILearnerPackageService;
 
 @Service
-@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional
 public class LearnerPackageService implements ILearnerPackageService {
@@ -32,6 +30,16 @@ public class LearnerPackageService implements ILearnerPackageService {
   private final LearnerPackageMapper mapper;
   private final LearnerProfileRepository learnerProfileRepository;
   private final PackageRepository packageRepository;
+
+  public LearnerPackageService(LearnerPackageRepository repo,
+      LearnerPackageMapper mapper,
+      LearnerProfileRepository learnerProfileRepository,
+      PackageRepository packageRepository) {
+    this.repo = repo;
+    this.mapper = mapper;
+    this.learnerProfileRepository = learnerProfileRepository;
+    this.packageRepository = packageRepository;
+  }
 
   @Override
   public LearnerPackageResponse purchase(LearnerPackageRequest payload, Long loggedUserId) {
@@ -46,7 +54,7 @@ public class LearnerPackageService implements ILearnerPackageService {
     lp.setPackageEntity(pkg);
     lp.setPurchaseDate(LocalDateTime.now());
     lp.setPriceAtPurchase(pkg.getPrice());
-    lp.setExpireDate(LocalDateTime.now().plusMonths(1)); // hoặc theo package định nghĩa
+    lp.setExpireDate(LocalDateTime.now().plusMonths(1)); // Tạm định 1 tháng
     lp.setPaymentStatus(PaymentStatus.PENDING);
 
     return mapper.toResponse(repo.save(lp));
@@ -93,9 +101,13 @@ public class LearnerPackageService implements ILearnerPackageService {
   }
 
   @Override
-  public Page<LearnerPackageResponse> listByLearner(Long learnerId, Pageable pageable) {
-    var learnerPackages = repo.findAllByLearnerId(learnerId, pageable);
+  public Page<LearnerPackageResponse> listByUser(Long userId, Pageable pageable) {
+    // tim LearnerProfile theo userId
+    var learner = learnerProfileRepository.findByUserId(userId)
+        .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "userId", userId));
+    
+    // dung learnerId de tim LearnerPackage
+    var learnerPackages = repo.findAllByLearnerId(learner.getId(), pageable);
     return learnerPackages.map(mapper::toResponse);
   }
-
 }

@@ -44,4 +44,5 @@ public class User extends Auditable {
   private UserStatus status = UserStatus.ACTIVE; // active | disabled
 
   private LocalDateTime deletedAt;
+
 }

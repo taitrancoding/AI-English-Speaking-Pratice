@@ -1,7 +1,6 @@
 package ut.aesp.service.Impl;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +17,6 @@ import ut.aesp.repository.UserRepository;
 import ut.aesp.service.ILearnerProfileService;
 
 @Service
-@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional
 public class LearnerProfileService implements ILearnerProfileService {
@@ -26,10 +24,16 @@ public class LearnerProfileService implements ILearnerProfileService {
   private final LearnerProfileRepository repo;
   private final LearnerProfileMapper mapper;
   private final UserRepository userRepository;
+  public LearnerProfileService(LearnerProfileRepository repo,
+      LearnerProfileMapper mapper,
+      UserRepository userRepository) {
+    this.repo = repo;
+    this.mapper = mapper;
+    this.userRepository = userRepository;
+  }
 
   @Override
   public LearnerProfileResponse create(LearnerProfileRequest payload) {
-
     var user = userRepository.findById(payload.getUserId())
         .orElseThrow(() -> new ResourceNotFoundException("User", "id", payload.getUserId()));
     LearnerProfile entity = mapper.toEntity(payload);
@@ -42,6 +46,13 @@ public class LearnerProfileService implements ILearnerProfileService {
   public LearnerProfileResponse getById(Long id) {
     return repo.findById(id).map(mapper::toResponse)
         .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "id", id));
+  }
+
+  @Override
+  public LearnerProfileResponse getByUserId(Long userId) {
+    LearnerProfile profile = repo.findByUserId(userId)
+        .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "userId", userId));
+    return mapper.toResponse(profile);
   }
 
   @Override

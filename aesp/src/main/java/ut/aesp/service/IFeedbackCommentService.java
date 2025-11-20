@@ -15,4 +15,6 @@ public interface IFeedbackCommentService {
   FeedbackCommentResponse update(Long id, FeedbackCommentRequest payload);
 
   Page<FeedbackCommentResponse> listByUser(Long userId, Pageable pageable);
+
+  Page<FeedbackCommentResponse> getAll(Pageable pageable);
 }
