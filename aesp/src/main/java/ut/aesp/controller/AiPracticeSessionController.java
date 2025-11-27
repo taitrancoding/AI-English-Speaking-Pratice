@@ -1,50 +1,84 @@
 package ut.aesp.controller;
 
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.AccessLevel;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ut.aesp.dto.session.*;
-import ut.aesp.service.IAiPracticeSessionService;
+import ut.aesp.dto.session.AiEvaluationRequest;
+import ut.aesp.dto.session.AiEvaluationResponse;
+import ut.aesp.dto.session.AiPracticeSessionResponse;
+import ut.aesp.model.AiPracticeSession;
+import ut.aesp.service.IAiService;
+import ut.aesp.service.Impl.AiPracticeSessionService;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/practice-sessions")
-@RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RequestMapping("/api/v1")
 public class AiPracticeSessionController {
-  IAiPracticeSessionService aiPracticeSessionService;
 
-  @PostMapping
-  @PreAuthorize("hasRole('ADMIN') or hasRole('LEARNER')")
-  public ResponseEntity<?> create(@RequestBody AiPracticeSessionRequest payload) {
-    return ResponseEntity.ok(aiPracticeSessionService.create(payload));
+  private final AiPracticeSessionService service;
+  private final IAiService aiService;
+
+  public AiPracticeSessionController(AiPracticeSessionService service, IAiService aiService) {
+    this.service = service;
+    this.aiService = aiService;
   }
 
-  @GetMapping("/{id}")
-  @PreAuthorize("hasRole('ADMIN') or hasRole('LEARNER') or hasRole('MENTOR')")
-  public ResponseEntity<?> get(@PathVariable Long id) {
-    return ResponseEntity.ok(aiPracticeSessionService.get(id));
+  @GetMapping("/ai-practice-sessions")
+  public List<AiPracticeSession> getAll() {
+    return service.findAll();
   }
 
-  @PutMapping("/{id}/scores")
-  @PreAuthorize("hasRole('ADMIN') or hasRole('MENTOR')")
-  public ResponseEntity<?> updateScores(@PathVariable Long id, @RequestBody AiPracticeSessionRequest payload) {
-    return ResponseEntity.ok(aiPracticeSessionService.updateScores(id, payload));
+  @GetMapping("/ai-practice-sessions/learner/{learnerId}")
+  public List<AiPracticeSession> getByLearner(@PathVariable Long learnerId) {
+    return service.findByLearner(learnerId);
   }
 
-  @DeleteMapping("/{id}")
-  @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<?> delete(@PathVariable Long id) {
-    aiPracticeSessionService.delete(id);
-    return ResponseEntity.noContent().build();
+  @PostMapping("/ai-practice-sessions")
+  public AiPracticeSession create(@RequestBody AiPracticeSession session) {
+    // TODO: Call Gemini AI here to fill aiFeedback
+    session.setAiFeedback("Sample feedback from Gemini"); // placeholder
+    return service.save(session);
   }
 
-  @GetMapping("/learner/{learnerId}")
-  @PreAuthorize("hasRole('ADMIN') or (hasRole('LEARNER') and #learnerId == T(ut.aesp.security.CustomUserDetailsService).getCurrentUserId())")
-  public ResponseEntity<?> listByLearner(@PathVariable Long learnerId, Pageable pageable) {
-    return ResponseEntity.ok(aiPracticeSessionService.listByLearner(learnerId, pageable));
+  /**
+   * Evaluate speech text using Gemini AI and return immediate response
+   * POST /api/v1/ai/evaluation
+   */
+  @PostMapping("/ai/evaluation")
+  public ResponseEntity<?> evaluateSpeech(@RequestBody AiEvaluationRequest request) {
+    try {
+      AiEvaluationResponse response = aiService.evaluateSpeech(request);
+      return ResponseEntity.ok(response);
+    } catch (Exception e) {
+      // Log error for debugging
+      System.err.println("Error in /ai/evaluation: " + e.getMessage());
+      e.printStackTrace();
+      
+      // Return error message in response
+      Map<String, String> errorResponse = new HashMap<>();
+      errorResponse.put("error", e.getMessage());
+      errorResponse.put("message", "Failed to evaluate speech: " + e.getMessage());
+      
+      return ResponseEntity.status(500).body(errorResponse);
+    }
+  }
+
+  /**
+   * Get practice sessions for current authenticated learner
+   * GET /api/v1/ai/practice/me?page=0&size=10
+   */
+  @GetMapping("/ai/practice/me")
+  public ResponseEntity<Page<AiPracticeSessionResponse>> getMySessions(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
+    try {
+      Page<AiPracticeSessionResponse> sessions = aiService.getSessionsForCurrentUser(page, size);
+      return ResponseEntity.ok(sessions);
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError().build();
+    }
   }
 }
