@@ -9,6 +9,7 @@ public class MentorResponse {
   private Long id;
   private Long userId;
   private String name;
+  private String email;
   private String bio;
   private String skills;
   private Float rating;
