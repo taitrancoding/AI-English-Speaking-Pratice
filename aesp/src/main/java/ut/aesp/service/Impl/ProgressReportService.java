@@ -78,4 +78,11 @@ public class ProgressReportService implements IProgressReportService {
         .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "id", learnerId));
     return repo.findAllByLearner(learner, pageable).map(mapper::toResponse);
   }
+
+  @Override
+  public Page<ProgressReportResponse> listByUser(Long userId, Pageable pageable) {
+    var learner = learnerProfileRepository.findByUserId(userId)
+        .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "userId", userId));
+    return repo.findAllByLearner(learner, pageable).map(mapper::toResponse);
+  }
 }
