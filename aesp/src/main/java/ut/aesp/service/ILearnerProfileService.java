@@ -16,4 +16,8 @@ public interface ILearnerProfileService {
   void delete(Long id);
 
   Page<LearnerProfileResponse> getAll(Pageable pageable);
+
+  LearnerProfileResponse getByUserId(Long userId);
+
+  LearnerProfileResponse updateByUserId(Long userId, LearnerProfileUpdate payload);
 }
