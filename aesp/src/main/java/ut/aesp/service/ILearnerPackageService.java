@@ -1,12 +1,11 @@
 package ut.aesp.service;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ut.aesp.dto.LearnerPackage.LearnerPackageRequest;
 import ut.aesp.dto.LearnerPackage.LearnerPackageResponse;
 import ut.aesp.dto.LearnerPackage.LearnerPackageUpdate;
+import ut.aesp.dto.mentor.MentorLearnerSummaryResponse;
 
 public interface ILearnerPackageService {
   LearnerPackageResponse purchase(LearnerPackageRequest payload, Long loggedUserId);
@@ -21,4 +20,11 @@ public interface ILearnerPackageService {
 
   Page<LearnerPackageResponse> listByLearner(Long learnerId, Pageable pageable);
 
+  Page<LearnerPackageResponse> listByUserId(Long userId, Pageable pageable);
+
+  Page<MentorLearnerSummaryResponse> listByMentor(Long mentorId, Pageable pageable);
+
+  LearnerPackageResponse approve(Long id);
+
+  LearnerPackageResponse reject(Long id);
 }
