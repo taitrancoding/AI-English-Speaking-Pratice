@@ -6,9 +6,11 @@ import lombok.AccessLevel;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ut.aesp.dto.report.*;
 import ut.aesp.service.IProgressReportService;
+import ut.aesp.security.CustomUserDetailsService;
 
 @RestController
 @RequestMapping("/api/v1/reports/progress")
@@ -24,7 +26,7 @@ public class ProgressReportController {
   }
 
   @GetMapping("/{id}")
-  @PreAuthorize("hasRole('ADMIN') or hasRole('MENTOR') or @securityService.isOwnerOfReport(#id)")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('MENTOR') or hasRole('LEARNER') or@securityService.isOwnerOfReport(#id)")
   public ResponseEntity<?> get(@PathVariable Long id) {
     return ResponseEntity.ok(progressReportService.get(id));
   }
@@ -46,5 +48,13 @@ public class ProgressReportController {
   @PreAuthorize("hasRole('ADMIN') or principal.id == #learnerId or hasRole('MENTOR')")
   public ResponseEntity<?> listByLearner(@PathVariable Long learnerId, Pageable pageable) {
     return ResponseEntity.ok(progressReportService.listByLearner(learnerId, pageable));
+  }
+
+  @GetMapping("/me")
+  @PreAuthorize("hasRole('LEARNER') or hasRole('ADMIN')")
+  public ResponseEntity<?> listMyReports(
+      @AuthenticationPrincipal CustomUserDetailsService.CustomUserDetails userDetails,
+      Pageable pageable) {
+    return ResponseEntity.ok(progressReportService.listByUser(userDetails.getId(), pageable));
   }
 }
