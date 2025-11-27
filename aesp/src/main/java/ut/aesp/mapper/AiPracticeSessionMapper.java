@@ -1,17 +1,25 @@
-package ut.aesp.mapper;
+// package ut.aesp.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import ut.aesp.dto.session.AiPracticeSessionRequest;
-import ut.aesp.dto.session.AiPracticeSessionResponse;
-import ut.aesp.model.AiPracticeSession;
+// import org.springframework.stereotype.Component;
+// import ut.aesp.dto.session.AiPracticeSessionResponse;
+// import ut.aesp.model.AiPracticeSession;
 
-@Mapper(componentModel = "spring")
-public interface AiPracticeSessionMapper {
+// @Component
+// public class AiPracticeSessionMapper {
 
-  AiPracticeSession toEntity(AiPracticeSessionRequest dto);
-
-  @Mapping(target = "learnerId", source = "learner.id")
-  AiPracticeSessionResponse toResponse(AiPracticeSession entity);
-
-}
+// public AiPracticeSessionResponse toResponse(AiPracticeSession s) {
+// AiPracticeSessionResponse r = new AiPracticeSessionResponse();
+// r.setId(s.getId());
+// r.setLearnerId(s.getLearner().getId());
+// r.setTopic(s.getTopic());
+// r.setScenario(s.getScenario());
+// r.setDurationMinutes(s.getDurationMinutes());
+// r.setPronunciationScore(s.getPronunciationScore());
+// r.setGrammarScore(s.getGrammarScore());
+// r.setVocabularyScore(s.getVocabularyScore());
+// r.setAiFeedback(s.getAiFeedback());
+// r.setAiVersion(s.getAiVersion());
+// r.setAudioUrl(s.getAudioUrl());
+// return r;
+// }
+// }
