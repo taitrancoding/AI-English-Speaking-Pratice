@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ut.aesp.dto.auth.GoogleLoginRequest;
 import ut.aesp.dto.auth.LoginRequest;
 import ut.aesp.dto.auth.RegisterRequest;
-import ut.aesp.dto.auth.TokenReponse;
+import ut.aesp.dto.auth.TokenResponse;
 import ut.aesp.model.User;
 import ut.aesp.service.Impl.AuthService;
 
@@ -26,17 +26,17 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<TokenReponse> login(@Valid @RequestBody LoginRequest request) {
+  public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest request) {
     return ResponseEntity.ok(authService.login(request));
   }
 
   @PostMapping("/google")
-  public ResponseEntity<TokenReponse> loginWithGoogle(@RequestParam String idToken) {
+  public ResponseEntity<TokenResponse> loginWithGoogle(@RequestParam String idToken) {
     return ResponseEntity.ok(authService.loginWithGoogle(idToken));
   }
 
   @PostMapping("/refresh")
-  public ResponseEntity<TokenReponse> refresh(@RequestParam String refreshToken) {
+  public ResponseEntity<TokenResponse> refresh(@RequestParam String refreshToken) {
     return ResponseEntity.ok(authService.refreshToken(refreshToken));
   }
 
