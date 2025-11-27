@@ -1,77 +1,34 @@
 package ut.aesp.service.Impl;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ut.aesp.dto.session.AiPracticeSessionRequest;
-import ut.aesp.dto.session.AiPracticeSessionResponse;
-import ut.aesp.exception.ResourceNotFoundException;
-import ut.aesp.mapper.AiPracticeSessionMapper;
 import ut.aesp.model.AiPracticeSession;
 import ut.aesp.repository.AiPracticeSessionRepository;
-import ut.aesp.repository.LearnerProfileRepository;
-import ut.aesp.service.IAiPracticeSessionService;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Transactional
-public class AiPracticeSessionService implements IAiPracticeSessionService {
+public class AiPracticeSessionService {
 
-  private final AiPracticeSessionRepository repo;
-  private final AiPracticeSessionMapper mapper;
-  private final LearnerProfileRepository learnerProfileRepository;
+  private final AiPracticeSessionRepository repository;
 
-  @Override
-  public AiPracticeSessionResponse create(AiPracticeSessionRequest payload) {
-    var learner = learnerProfileRepository.findById(payload.getLearnerId())
-        .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "id",
-            payload.getLearnerId()));
-    AiPracticeSession s = mapper.toEntity(payload);
-    s.setLearner(learner);
-    var saved = repo.save(s);
-    return mapper.toResponse(saved);
+  public AiPracticeSessionService(AiPracticeSessionRepository repository) {
+    this.repository = repository;
   }
 
-  @Override
-  public AiPracticeSessionResponse get(Long id) {
-    return repo.findById(id).map(mapper::toResponse)
-        .orElseThrow(() -> new ResourceNotFoundException("AiPracticeSession", "id",
-            id));
+  public AiPracticeSession save(AiPracticeSession session) {
+    return repository.save(session);
   }
 
-  @Override
-  public AiPracticeSessionResponse updateScores(Long id,
-      AiPracticeSessionRequest payload) {
-    AiPracticeSession s = repo.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("AiPracticeSession", "id",
-            id));
-    if (payload.getDurationMinutes() != null)
-      s.setDurationMinutes(payload.getDurationMinutes());
-    if (payload.getAudioUrl() != null)
-      s.setAudioUrl(payload.getAudioUrl());
-    if (payload.getAiVersion() != null)
-      s.setAiVersion(payload.getAiVersion());
-
-    var updated = repo.save(s);
-    return mapper.toResponse(updated);
+  public List<AiPracticeSession> findAll() {
+    return repository.findAll();
   }
 
-  @Override
-  public void delete(Long id) {
-    var s = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("AiPracticeSession", "id", id));
-    repo.delete(s);
+  public Optional<AiPracticeSession> findById(Long id) {
+    return repository.findById(id);
   }
 
-  @Override
-  public Page<AiPracticeSessionResponse> listByLearner(Long learnerId, Pageable pageable) {
-    var learner = learnerProfileRepository.findById(learnerId)
-        .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "id",
-            learnerId));
-    return repo.findAllByLearner(learner, pageable).map(mapper::toResponse);
+  public List<AiPracticeSession> findByLearner(Long learnerId) {
+    return repository.findAllByLearnerId(learnerId);
   }
 }
