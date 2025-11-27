@@ -1,18 +1,18 @@
 package ut.aesp.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import ut.aesp.dto.feedback.MentorFeedbackRequest;
-import ut.aesp.dto.feedback.MentorFeedbackResponse;
+import ut.aesp.dto.mentor.MentorFeedbackRequest;
+import ut.aesp.dto.mentor.MentorFeedbackResponse;
+
+import java.util.List;
 
 public interface IMentorFeedbackService {
-  MentorFeedbackResponse create(MentorFeedbackRequest payload);
-
-  MentorFeedbackResponse get(Long id);
-
-  void delete(Long id);
-
-  MentorFeedbackResponse update(Long id, MentorFeedbackRequest request);
-
-  Page<MentorFeedbackResponse> listByMentor(Long mentorId, Pageable pageable);
+  MentorFeedbackResponse createFeedback(Long mentorId, MentorFeedbackRequest request);
+  
+  MentorFeedbackResponse getFeedback(Long id);
+  
+  List<MentorFeedbackResponse> getFeedbacksByLearner(Long learnerId);
+  
+  List<MentorFeedbackResponse> getFeedbacksByMentor(Long mentorId);
+  
+  List<MentorFeedbackResponse> getImmediateFeedbacks(Long learnerId);
 }
