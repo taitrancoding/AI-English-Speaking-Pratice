@@ -53,8 +53,14 @@ public class MentorService implements IMentorService {
       m.setSkills(payload.getSkills());
     if (payload.getExperienceYears() != null)
       m.setExperienceYears(payload.getExperienceYears());
-    if (payload.getAvailabilityStatus() != null)
-      m.setAvailabilityStatus(AvailabilityStatus.valueOf(payload.getAvailabilityStatus()));
+    if (payload.getAvailabilityStatus() != null) {
+      try {
+        var status = AvailabilityStatus.valueOf(payload.getAvailabilityStatus().toUpperCase());
+        m.setAvailabilityStatus(status);
+      } catch (IllegalArgumentException ex) {
+        throw new ResourceNotFoundException("AvailabilityStatus", "value", payload.getAvailabilityStatus());
+      }
+    }
     var updated = repo.save(m);
     return mapper.toResponse(updated);
   }
@@ -68,5 +74,12 @@ public class MentorService implements IMentorService {
   @Override
   public Page<MentorResponse> list(Pageable pageable) {
     return repo.findAll(pageable).map(mapper::toResponse);
+  }
+
+  @Override
+  public MentorResponse getByUserId(Long userId) {
+    return repo.findByUserId(userId)
+        .map(mapper::toResponse)
+        .orElseThrow(() -> new ResourceNotFoundException("Mentor", "userId", userId));
   }
 }
