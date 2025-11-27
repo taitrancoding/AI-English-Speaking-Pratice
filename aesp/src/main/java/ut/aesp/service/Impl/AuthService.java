@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 import io.jsonwebtoken.io.IOException;
 import ut.aesp.dto.auth.LoginRequest;
 import ut.aesp.dto.auth.RegisterRequest;
-import ut.aesp.dto.auth.TokenReponse;
+import ut.aesp.dto.auth.TokenResponse;
 import ut.aesp.enums.UserRole;
 import ut.aesp.enums.UserStatus;
 import ut.aesp.exception.APIException;
@@ -69,7 +69,7 @@ public class AuthService implements IAuthService {
   }
 
   @Override
-  public TokenReponse login(LoginRequest request) {
+  public TokenResponse login(LoginRequest request) {
     User user = userRepository.findByEmail(request.getEmail())
         .orElseThrow(() -> new APIException("Email không tồn tại", HttpStatus.UNAUTHORIZED));
 
@@ -83,12 +83,12 @@ public class AuthService implements IAuthService {
     String accessToken = jwtTokenProvider.generateAccessToken(user);
     String refreshToken = jwtTokenProvider.generateRefreshToken(user);
 
-    return new TokenReponse(accessToken, refreshToken);
+    return new TokenResponse(accessToken, refreshToken);
   }
 
   @Override
   @Transactional
-  public TokenReponse loginWithGoogle(String idTokenString) {
+  public TokenResponse loginWithGoogle(String idTokenString) {
     try {
       final NetHttpTransport transport = GoogleNetHttpTransport.newTrustedTransport();
       final JacksonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -122,14 +122,14 @@ public class AuthService implements IAuthService {
       String accessToken = jwtTokenProvider.generateAccessToken(user);
       String refreshToken = jwtTokenProvider.generateRefreshToken(user);
 
-      return new TokenReponse(accessToken, refreshToken);
+      return new TokenResponse(accessToken, refreshToken);
 
     } catch (Exception e) {
       throw new APIException("Đăng nhập Google thất bại: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  public TokenReponse refreshToken(String refreshToken) {
+  public TokenResponse refreshToken(String refreshToken) {
     if (!jwtTokenProvider.validateToken(refreshToken)) {
       throw new APIException("Refresh token không hợp lệ", HttpStatus.UNAUTHORIZED);
     }
@@ -141,7 +141,7 @@ public class AuthService implements IAuthService {
     String newAccess = jwtTokenProvider.generateAccessToken(user);
     String newRefresh = jwtTokenProvider.generateRefreshToken(user);
 
-    return new TokenReponse(newAccess, newRefresh);
+    return new TokenResponse(newAccess, newRefresh);
   }
 
   public void logout(String token) {
