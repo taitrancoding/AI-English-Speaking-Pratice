@@ -8,12 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ut.aesp.dto.LearnerPackage.*;
-import ut.aesp.model.User;
 import ut.aesp.security.CustomUserDetailsService;
 import ut.aesp.service.ILearnerPackageService;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("/api/v1/learner-packages")
@@ -52,7 +50,34 @@ public class LearnerPackageController {
 
   @GetMapping
   @PreAuthorize("hasRole('ADMIN') or hasRole('LEARNER')")
-  public ResponseEntity<?> list(Pageable pageable) {
+  public ResponseEntity<?> list(Pageable pageable,
+      @AuthenticationPrincipal CustomUserDetailsService.CustomUserDetails userDetails) {
+
+    Long userId = userDetails.getId();
+    if (userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+      return ResponseEntity.ok(learnerPackageService.list(pageable));
+    }
+    // For LEARNER, find learnerId from userId
+    return ResponseEntity.ok(learnerPackageService.listByUserId(userId, pageable));
+  }
+
+  @GetMapping("/admin")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<?> listAllForAdmin(Pageable pageable) {
     return ResponseEntity.ok(learnerPackageService.list(pageable));
   }
+
+  @PutMapping("/{id}/approve")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<?> approve(@PathVariable Long id) {
+    return ResponseEntity.ok(learnerPackageService.approve(id));
+  }
+
+  @PutMapping("/{id}/reject")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<?> reject(@PathVariable Long id) {
+    return ResponseEntity.ok(learnerPackageService.reject(id));
+  }
 }
+
+// note
