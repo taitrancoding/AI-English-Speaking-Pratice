@@ -19,6 +19,11 @@ public interface LearnerProfileMapper {
   LearnerProfile toEntity(LearnerProfileRequest dto);
 
   @Mapping(target = "userId", source = "user.id")
+  @Mapping(target = "name", expression = "java(entity.getUser() != null ? entity.getUser().getName() : entity.getName())")
+  @Mapping(target = "email", expression = "java(entity.getUser() != null ? entity.getUser().getEmail() : null)")
+  @Mapping(target = "englishLevel", source = "englishLevel")
+  @Mapping(target = "goals", source = "goals")
+  @Mapping(target = "preferences", source = "preferences")
   LearnerProfileResponse toResponse(LearnerProfile entity);
 
   @Mapping(target = "user.id", source = "userId")
