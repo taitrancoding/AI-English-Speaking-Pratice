@@ -33,7 +33,7 @@ public class AiPracticeSession extends Auditable {
   @Lob
   private String aiFeedback;
 
-  @Lob
+  @Column(nullable = true, length = 500)
   private String audioUrl;
 
   private String aiVersion;
