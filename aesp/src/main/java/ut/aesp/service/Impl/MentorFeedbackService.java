@@ -1,128 +1,125 @@
 package ut.aesp.service.Impl;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import lombok.AccessLevel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ut.aesp.dto.feedback.MentorFeedbackRequest;
-import ut.aesp.dto.feedback.MentorFeedbackResponse;
+import ut.aesp.dto.mentor.MentorFeedbackRequest;
+import ut.aesp.dto.mentor.MentorFeedbackResponse;
 import ut.aesp.exception.ResourceNotFoundException;
-import ut.aesp.mapper.MentorFeedbackMapper;
-import ut.aesp.model.Mentor;
+import ut.aesp.model.AiPracticeSession;
 import ut.aesp.model.LearnerProfile;
+import ut.aesp.model.Mentor;
 import ut.aesp.model.MentorFeedback;
+import ut.aesp.repository.AiPracticeSessionRepository;
+import ut.aesp.repository.LearnerProfileRepository;
 import ut.aesp.repository.MentorFeedbackRepository;
 import ut.aesp.repository.MentorRepository;
-import ut.aesp.repository.LearnerProfileRepository;
-import ut.aesp.repository.AiPracticeSessionRepository;
 import ut.aesp.service.IMentorFeedbackService;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional
 public class MentorFeedbackService implements IMentorFeedbackService {
 
-  private final MentorFeedbackRepository repo;
-  private final MentorFeedbackMapper mapper;
-  private final MentorRepository mentorRepository;
+  private final MentorFeedbackRepository feedbackRepository;
   private final LearnerProfileRepository learnerProfileRepository;
+  private final MentorRepository mentorRepository;
   private final AiPracticeSessionRepository sessionRepository;
 
   @Override
-  public MentorFeedbackResponse create(MentorFeedbackRequest payload) {
-    System.out.println(
-        "🟢 Creating feedback for mentorId=" + payload.getMentorId() + ", learnerId=" + payload.getLearnerId());
-
-    Mentor mentor = mentorRepository.findById(payload.getMentorId())
-        .orElseThrow(() -> new ResourceNotFoundException("Mentor", "id", payload.getMentorId()));
-
-    LearnerProfile learner = learnerProfileRepository.findById(payload.getLearnerId())
-        .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "id", payload.getLearnerId()));
-
-    MentorFeedback mf = mapper.toEntity(payload);
-    mf.setMentor(mentor);
-    System.out.println("Setting learner for feedback: " + learner.getId());
-    mf.setLearner(learner);
-    System.out.println("Learner set successfully.");
-    mf.setPronunciationComment(payload.getPronunciationComment());
-    System.out.println("Pronunciation comment set: " + payload.getPronunciationComment());
-    mf.setGrammarComment(payload.getGrammarComment());
-    System.out.println("Grammar comment set: " + payload.getGrammarComment());
-    mf.setImprovementSuggestion(payload.getImprovementSuggestion());
-    System.out.println("Improvement suggestion set: " + payload.getImprovementSuggestion());
-    mf.setRating(payload.getRating());
-
-    if (payload.getSessionId() != null) {
-      var session = sessionRepository.findById(payload.getSessionId())
-          .orElseThrow(() -> new ResourceNotFoundException("AiPracticeSession", "id", payload.getSessionId()));
-      mf.setSession(session);
-    }
-
-    var saved = repo.save(mf);
-    System.out.println("Creating new feedback for mentorId=" + payload.getMentorId()
-        + ", learnerId=" + payload.getLearnerId()
-        + ", sessionId=" + payload.getSessionId());
-
-    return mapper.toResponse(saved);
-  }
-
-  @Override
-  public MentorFeedbackResponse get(Long id) {
-    return repo.findById(id).map(mapper::toResponse)
-        .orElseThrow(() -> new ResourceNotFoundException("MentorFeedback", "id", id));
-  }
-
-  @Override
-  public MentorFeedbackResponse update(Long id, MentorFeedbackRequest request) {
-
-    MentorFeedback existing = repo.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("MentorFeedback", "id", id));
-
-    if (request.getMentorId() != null) {
-      Mentor mentor = mentorRepository.findById(request.getMentorId())
-          .orElseThrow(() -> new ResourceNotFoundException("Mentor", "id", request.getMentorId()));
-      existing.setMentor(mentor);
-    }
-
-    if (request.getLearnerId() != null) {
-      LearnerProfile learner = learnerProfileRepository.findById(request.getLearnerId())
-          .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "id", request.getLearnerId()));
-      existing.setLearner(learner);
-    }
-
-    if (request.getSessionId() != null) {
-      var session = sessionRepository.findById(request.getSessionId())
-          .orElseThrow(() -> new ResourceNotFoundException("AiPracticeSession", "id", request.getSessionId()));
-      existing.setSession(session);
-    }
-
-    if (request.getPronunciationComment() != null)
-      existing.setPronunciationComment(request.getPronunciationComment());
-    if (request.getGrammarComment() != null)
-      existing.setGrammarComment(request.getGrammarComment());
-    if (request.getImprovementSuggestion() != null)
-      existing.setImprovementSuggestion(request.getImprovementSuggestion());
-    if (request.getRating() != null)
-      existing.setRating(request.getRating());
-
-    var updated = repo.save(existing);
-    return mapper.toResponse(updated);
-  }
-
-  @Override
-  public void delete(Long id) {
-    var mf = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("MentorFeedback", "id", id));
-    repo.delete(mf);
-  }
-
-  @Override
-  public Page<MentorFeedbackResponse> listByMentor(Long mentorId, Pageable pageable) {
-    Mentor m = mentorRepository.findById(mentorId)
+  public MentorFeedbackResponse createFeedback(Long mentorId, MentorFeedbackRequest request) {
+    Mentor mentor = mentorRepository.findById(mentorId)
         .orElseThrow(() -> new ResourceNotFoundException("Mentor", "id", mentorId));
-    return repo.findAllByMentor(m, pageable).map(mapper::toResponse);
+    
+    LearnerProfile learner = learnerProfileRepository.findById(request.getLearnerId())
+        .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "id", request.getLearnerId()));
+
+    MentorFeedback feedback = new MentorFeedback();
+    feedback.setLearner(learner);
+    feedback.setMentor(mentor);
+    
+    if (request.getPracticeSessionId() != null) {
+      AiPracticeSession session = sessionRepository.findById(request.getPracticeSessionId())
+          .orElse(null);
+      feedback.setPracticeSession(session);
+    }
+    
+    feedback.setPronunciationErrors(request.getPronunciationErrors());
+    feedback.setGrammarErrors(request.getGrammarErrors());
+    feedback.setVocabularyIssues(request.getVocabularyIssues());
+    feedback.setClarityGuidance(request.getClarityGuidance());
+    feedback.setConversationTopics(request.getConversationTopics());
+    feedback.setVocabularySuggestions(request.getVocabularySuggestions());
+    feedback.setNativeSpeakerTips(request.getNativeSpeakerTips());
+    feedback.setOverallFeedback(request.getOverallFeedback());
+    feedback.setIsImmediate(request.getIsImmediate() != null ? request.getIsImmediate() : true);
+    feedback.setFeedbackDate(LocalDateTime.now());
+
+    MentorFeedback saved = feedbackRepository.save(feedback);
+    return toResponse(saved);
+  }
+
+  @Override
+  public MentorFeedbackResponse getFeedback(Long id) {
+    MentorFeedback feedback = feedbackRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("MentorFeedback", "id", id));
+    return toResponse(feedback);
+  }
+
+  @Override
+  public List<MentorFeedbackResponse> getFeedbacksByLearner(Long learnerId) {
+    return feedbackRepository.findAllByLearnerId(learnerId).stream()
+        .map(this::toResponse)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<MentorFeedbackResponse> getFeedbacksByMentor(Long mentorId) {
+    return feedbackRepository.findAllByMentorId(mentorId).stream()
+        .map(this::toResponse)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<MentorFeedbackResponse> getImmediateFeedbacks(Long learnerId) {
+    return feedbackRepository.findAllByLearnerIdAndIsImmediateTrue(learnerId).stream()
+        .map(this::toResponse)
+        .collect(Collectors.toList());
+  }
+
+  private MentorFeedbackResponse toResponse(MentorFeedback feedback) {
+    MentorFeedbackResponse response = new MentorFeedbackResponse();
+    response.setId(feedback.getId());
+    response.setLearnerId(feedback.getLearner().getId());
+    response.setLearnerName(feedback.getLearner().getUser() != null
+        ? feedback.getLearner().getUser().getName()
+        : feedback.getLearner().getName());
+    response.setMentorId(feedback.getMentor().getId());
+    response.setMentorName(feedback.getMentor().getUser() != null
+        ? feedback.getMentor().getUser().getName()
+        : null);
+    response.setPracticeSessionId(feedback.getPracticeSession() != null
+        ? feedback.getPracticeSession().getId()
+        : null);
+    response.setPronunciationErrors(feedback.getPronunciationErrors());
+    response.setGrammarErrors(feedback.getGrammarErrors());
+    response.setVocabularyIssues(feedback.getVocabularyIssues());
+    response.setClarityGuidance(feedback.getClarityGuidance());
+    response.setConversationTopics(feedback.getConversationTopics());
+    response.setVocabularySuggestions(feedback.getVocabularySuggestions());
+    response.setNativeSpeakerTips(feedback.getNativeSpeakerTips());
+    response.setOverallFeedback(feedback.getOverallFeedback());
+    response.setFeedbackDate(feedback.getFeedbackDate());
+    response.setIsImmediate(feedback.getIsImmediate());
+    return response;
   }
 }
