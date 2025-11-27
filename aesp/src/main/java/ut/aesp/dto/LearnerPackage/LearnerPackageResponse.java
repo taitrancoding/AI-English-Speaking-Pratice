@@ -11,7 +11,11 @@ import lombok.Setter;
 public class LearnerPackageResponse {
   private Long id;
   private Long learnerId;
+  private String learnerName;
   private Long packageId;
+  private String packageName;
+  private String packageDescription;
+  private Integer packageDurationDays;
   private Integer transactionId;
   private BigDecimal priceAtPurchase;
   private LocalDateTime purchaseDate;
