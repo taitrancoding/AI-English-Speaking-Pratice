@@ -16,4 +16,6 @@ public interface IProgressReportService {
   void delete(Long id);
 
   Page<ProgressReportResponse> listByLearner(Long learnerId, Pageable pageable);
+
+  Page<ProgressReportResponse> listByUser(Long userId, Pageable pageable);
 }
