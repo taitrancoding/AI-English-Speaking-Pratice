@@ -1,10 +1,10 @@
 package ut.aesp.dto.packagee;
 
-import java.math.BigDecimal;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import java.math.BigDecimal;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,4 +31,6 @@ public class PackageRequest {
   private Boolean hasMentor;
 
   private String status;
+
+  private Set<Long> mentorIds;
 }
