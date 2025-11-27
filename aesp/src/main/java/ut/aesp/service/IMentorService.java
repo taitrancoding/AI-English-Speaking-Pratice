@@ -16,4 +16,6 @@ public interface IMentorService {
   void delete(Long id);
 
   Page<MentorResponse> list(Pageable pageable);
+
+  MentorResponse getByUserId(Long userId);
 }
