@@ -19,7 +19,12 @@ public interface LearnerPackageMapper {
   LearnerPackage toEntity(LearnerPackageRequest dto);
 
   @Mapping(target = "learnerId", source = "learner.id")
+  @Mapping(target = "learnerName", expression = "java(entity.getLearner().getUser() != null ? entity.getLearner().getUser().getName() : entity.getLearner().getName())")
   @Mapping(target = "packageId", source = "packageEntity.id")
+  @Mapping(target = "packageName", source = "packageEntity.name")
+  @Mapping(target = "packageDescription", source = "packageEntity.description")
+  @Mapping(target = "packageDurationDays", source = "packageEntity.durationDays")
+  @Mapping(target = "paymentStatus", expression = "java(entity.getPaymentStatus() != null ? entity.getPaymentStatus().name() : null)")
   LearnerPackageResponse toResponse(LearnerPackage entity);
 
 }
