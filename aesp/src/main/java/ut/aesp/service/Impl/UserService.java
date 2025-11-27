@@ -96,8 +96,10 @@ public class UserService implements IUserService {
     User u = userRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
 
-    u.setName(payload.getName());
-    u.setAvatarUrl(payload.getAvatarUrl());
+    if (payload.getName() != null)
+      u.setName(payload.getName());
+    if (payload.getAvatarUrl() != null)
+      u.setAvatarUrl(payload.getAvatarUrl());
 
     if (payload.getPassword() != null && !payload.getPassword().isEmpty()) {
       u.setPassword(passwordEncoder.encode(payload.getPassword()));
@@ -105,7 +107,9 @@ public class UserService implements IUserService {
     u.setUpdatedAt(LocalDateTime.now());
     if (payload.getRole() != null)
       u.setRole(payload.getRole());
-    u.setStatus(payload.getStatus());
+    // Only update status if provided, preserve existing status
+    if (payload.getStatus() != null)
+      u.setStatus(payload.getStatus());
     User updated = userRepository.save(u);
     return userMapper.toResponse(updated);
   }
