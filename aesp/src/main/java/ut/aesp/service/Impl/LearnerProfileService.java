@@ -76,4 +76,30 @@ public class LearnerProfileService implements ILearnerProfileService {
   public Page<LearnerProfileResponse> getAll(Pageable pageable) {
     return repo.findAll(pageable).map(mapper::toResponse);
   }
+
+  @Override
+  public LearnerProfileResponse getByUserId(Long userId) {
+    return repo.findByUserId(userId)
+        .map(mapper::toResponse)
+        .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "userId", userId));
+  }
+
+  @Override
+  public LearnerProfileResponse updateByUserId(Long userId, LearnerProfileUpdate payload) {
+    var entity = repo.findByUserId(userId)
+        .orElseThrow(() -> new ResourceNotFoundException("LearnerProfile", "userId", userId));
+
+    // Only update provided fields, preserve others
+    if (payload.getEnglishLevel() != null)
+      entity.setEnglishLevel(payload.getEnglishLevel());
+    if (payload.getGoals() != null)
+      entity.setGoals(payload.getGoals());
+    if (payload.getPreferences() != null)
+      entity.setPreferences(payload.getPreferences());
+    // Preserve other fields like aiScore, pronunciationScore, totalPracticeMinutes
+
+    var saved = repo.save(entity);
+    return mapper.toResponse(saved);
+  }
+
 }
