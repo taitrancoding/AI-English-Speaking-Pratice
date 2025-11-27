@@ -9,6 +9,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ut.aesp.dto.learner.*;
 import ut.aesp.service.ILearnerProfileService;
+import ut.aesp.security.CustomUserDetailsService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @RestController
 @RequestMapping("/api/v1/learners/profile")
@@ -46,5 +48,20 @@ public class LearnerProfileController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAll(Pageable pageable) {
         return ResponseEntity.ok(learnerProfileService.getAll(pageable));
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('LEARNER')")
+    public ResponseEntity<?> getCurrent(
+            @AuthenticationPrincipal CustomUserDetailsService.CustomUserDetails userDetails) {
+        return ResponseEntity.ok(learnerProfileService.getByUserId(userDetails.getId()));
+    }
+
+    @PutMapping("/me")
+    @PreAuthorize("hasRole('LEARNER')")
+    public ResponseEntity<?> updateCurrent(
+            @RequestBody LearnerProfileUpdate payload,
+            @AuthenticationPrincipal CustomUserDetailsService.CustomUserDetails userDetails) {
+        return ResponseEntity.ok(learnerProfileService.updateByUserId(userDetails.getId(), payload));
     }
 }
