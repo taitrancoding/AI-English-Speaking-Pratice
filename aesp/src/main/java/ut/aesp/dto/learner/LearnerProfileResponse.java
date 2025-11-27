@@ -10,6 +10,7 @@ public class LearnerProfileResponse {
   private Long id;
   private Long userId;
   private String name;
+  private String email;
   private EnglishLevel englishLevel;
   private String goals;
   private String preferences;
